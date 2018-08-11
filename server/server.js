@@ -1,3 +1,4 @@
+const config = require('./config/config');
 const express = require('express');
 const _ = require('lodash');
 const bodyParser = require('body-parser');
@@ -93,6 +94,7 @@ app.patch('/todos/:id', (req, res) => {
     if (_.isBoolean(body.completed) && body.completed) {
         body.completedAt = new Date().getTime();
     } else {
+        console.log("223232333")
         body.completedAt = null;
         body.completed = false;
     }
@@ -107,7 +109,9 @@ app.patch('/todos/:id', (req, res) => {
             return res.status(404).send();
         }
 
-        res.send({todo});
+        res.send({
+            todo
+        });
     }).catch(err => {
         res.status(404).send();
     });
