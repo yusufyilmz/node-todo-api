@@ -119,6 +119,26 @@ app.patch('/todos/:id', (req, res) => {
 
 });
 
+
+
+app.post('/users', (req, res) => {
+
+    var body = _.pick(req.body, ['password', 'email']);
+
+    var user = new User(body);
+
+    user.save().then( () => {
+        return user.generateAuthToken();
+    }).then(token => {
+        res.header('x-auth', token).send(user);
+    })
+    .catch(err => {
+        return res.status(404).send(err);
+    })
+
+});
+
+
 app.listen(port, () => {
     console.log('Started on port', port);
 });
@@ -126,37 +146,3 @@ app.listen(port, () => {
 module.exports = {
     app
 };
-
-
-
-
-// app.patch('todos/:id', (req, res) => {
-//     var id = req.params.id;
-//     var body = _.pick(req.body, ['text', 'completed']);
-
-
-//     if (!ObjectID.isValid(req.params.id)) {
-//         return res.status(404).send();
-//     }
-
-//     if (_.isBoolean(body.completed) && body.completed) {
-//         body.completedAt = new Date().getTime();
-//     } else {
-//         body.completedAt = null;
-//         body.completed = false;
-//     }
-
-//     Todo.findByIdAndUpdate(id, {
-//         $set: body
-//     }, {
-//         new: true
-//     }).then((todo) => {
-//         if (!todo) {
-//             return res.status(404).send();
-//         }
-
-//         res.send({todo});
-//     }).catch(err => {
-//         res.status(404).send();
-//     });
-// });
