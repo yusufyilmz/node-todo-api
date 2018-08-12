@@ -15,7 +15,9 @@ var {
 var {
     User
 } = require('./models/user');
-var {authenticate} = require('./middleware/authenticate');
+var {
+    authenticate
+} = require('./middleware/authenticate');
 
 var app = express();
 const port = process.env.PORT || 4000;
@@ -34,7 +36,7 @@ app.post('/todos', (req, res) => {
     })
 });
 
-app.get('/todos', authenticate, (req, res) => {
+app.get('/todos', (req, res) => {
     Todo.find().then((todos) => {
         res.send({
             todos
@@ -94,11 +96,9 @@ app.patch('/todos/:id', (req, res) => {
     if (_.isBoolean(body.completed) && body.completed) {
         body.completedAt = new Date().getTime();
     } else {
-        console.log("223232333")
         body.completedAt = null;
         body.completed = false;
     }
-
 
     Todo.findByIdAndUpdate(id, {
         $set: body
@@ -127,14 +127,14 @@ app.post('/users', (req, res) => {
 
     var user = new User(body);
 
-    user.save().then( () => {
-        return user.generateAuthToken();
-    }).then(token => {
-        res.header('x-auth', token).send(user);
-    })
-    .catch(err => {
-        return res.status(404).send(err);
-    })
+    user.save().then(() => {
+            return user.generateAuthToken();
+        }).then(token => {
+            res.header('x-auth', token).send(user);
+        })
+        .catch(err => {
+            return res.status(400).send(err);
+        })
 
 });
 
