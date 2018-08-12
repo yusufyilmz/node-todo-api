@@ -15,7 +15,7 @@ var {
 var {
     User
 } = require('./models/user');
-
+var {authenticate} = require('./middleware/authenticate');
 
 var app = express();
 const port = process.env.PORT || 4000;
@@ -34,7 +34,7 @@ app.post('/todos', (req, res) => {
     })
 });
 
-app.get('/todos', (req, res) => {
+app.get('/todos', authenticate, (req, res) => {
     Todo.find().then((todos) => {
         res.send({
             todos
@@ -137,6 +137,8 @@ app.post('/users', (req, res) => {
     })
 
 });
+
+
 
 
 app.listen(port, () => {
